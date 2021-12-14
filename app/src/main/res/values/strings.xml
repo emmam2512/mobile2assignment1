@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">foodTracker</string>
+    <string name="button_addEntry">Add Entry</string>
+    <string name="hint_entryTitle">Entry Title</string>
+    <string name="hint_entryDescription">Description </string>
+    <string name="hint_entryKcal">Number of Kcals </string>
+    <string name="hint_entryDate">Date </string>
+    <string name="hint_entryTime">Description </string>
+
+    <string name="menu_addEntry">Add</string>
+    <string name="menu_cancelEntry">Cancel</string>
 </resources>
