@@ -37,6 +37,11 @@ class EntryListActivity : AppCompatActivity(), EntryListener {
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.adapter = EntryAdapter(app.entrys.findAll(),this)
+        binding.searchBtn.setOnClickListener {
+            binding.recyclerView.adapter = EntryAdapter(app.entrys.findByTitle(binding.searchText.text.toString()),this)
+            binding.recyclerView.adapter?.notifyDataSetChanged()
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -58,5 +63,9 @@ class EntryListActivity : AppCompatActivity(), EntryListener {
         val launcherIntent = Intent(this, EntryActivity::class.java)
         launcherIntent.putExtra("entry_edit", entry)
         startActivityForResult(launcherIntent,0)
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        binding.recyclerView.adapter?.notifyDataSetChanged()
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }

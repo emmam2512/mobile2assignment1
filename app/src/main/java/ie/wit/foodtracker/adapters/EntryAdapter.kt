@@ -5,6 +5,7 @@ package ie.wit.foodtracker.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import ie.wit.foodtracker.databinding.CardEntryBinding
 import ie.wit.foodtracker.models.EntryModel
 interface EntryListener {
@@ -38,6 +39,7 @@ class EntryAdapter constructor(private var entrys: List<EntryModel>,
             binding.kcal.text = entry.kcal.toString()
             binding.date.text = entry.date
             binding.time.text = entry.time
+            Picasso.get().load(entry.image).resize(200,200).into(binding.imageIcon)
 
 
 
