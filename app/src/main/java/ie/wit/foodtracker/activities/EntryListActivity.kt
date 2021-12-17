@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +27,7 @@ class EntryListActivity : AppCompatActivity(), EntryListener {
 
     lateinit var app: MainApp
     private lateinit var binding: ActivityEntryListBinding
+    private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,16 +35,18 @@ class EntryListActivity : AppCompatActivity(), EntryListener {
         setContentView(binding.root)
         binding.toolbar.title = title
         setSupportActionBar(binding.toolbar)
+
         app = application as MainApp
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = EntryAdapter(app.entrys.findAll(),this)
         binding.searchBtn.setOnClickListener {
-            binding.recyclerView.adapter = EntryAdapter(app.entrys.findByTitle(binding.searchText.text.toString()),this)
-            binding.recyclerView.adapter?.notifyDataSetChanged()
+            showEntrys(app.entrys.findByTitle(binding.searchText.text.toString()))
         }
 
+        loadEntrys()
+
+        registerRefreshCallback()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -53,7 +58,7 @@ class EntryListActivity : AppCompatActivity(), EntryListener {
         when (item.itemId) {
             R.id.item_add -> {
                 val launcherIntent = Intent(this, EntryActivity::class.java)
-                startActivityForResult(launcherIntent,0)
+                refreshIntentLauncher.launch(launcherIntent)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -62,10 +67,21 @@ class EntryListActivity : AppCompatActivity(), EntryListener {
     override fun onEntryClick(entry: EntryModel) {
         val launcherIntent = Intent(this, EntryActivity::class.java)
         launcherIntent.putExtra("entry_edit", entry)
-        startActivityForResult(launcherIntent,0)
+        refreshIntentLauncher.launch(launcherIntent)
     }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+    private fun registerRefreshCallback() {
+        refreshIntentLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            { loadEntrys() }
+    }
+
+    private fun loadEntrys() {
+        showEntrys(app.entrys.findAll())
+    }
+
+    fun showEntrys (entrys: List<EntryModel>) {
+        binding.recyclerView.adapter = EntryAdapter(entrys, this)
         binding.recyclerView.adapter?.notifyDataSetChanged()
-        super.onActivityResult(requestCode, resultCode, data)
     }
 }

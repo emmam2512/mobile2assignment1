@@ -7,5 +7,6 @@ interface EntryStore {
     fun create(entry: EntryModel)
     fun update(entry: EntryModel)
     fun findByTitle(title: String): ArrayList<EntryModel>
+    fun delete(entry: EntryModel)
 
 }

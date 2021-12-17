@@ -29,7 +29,9 @@ class EntryMemStore : EntryStore {
 
         return foundEntrys
     }
-
+    override fun delete(entry: EntryModel) {
+        entrys.remove(entry)
+    }
 
     override fun update(entry: EntryModel) {
         var foundEntry: EntryModel? = entrys.find { p -> p.id == entry.id }
@@ -40,6 +42,9 @@ class EntryMemStore : EntryStore {
             foundEntry.date = entry.date
             foundEntry.time = entry.time
             foundEntry.image = entry.image
+            foundEntry.lat = entry.lat
+            foundEntry.lng = entry.lng
+            foundEntry.zoom = entry.zoom
 
             logAll()
         }

@@ -15,10 +15,14 @@ import ie.wit.foodtracker.main.MainApp
 import timber.log.Timber
 import timber.log.Timber.i
 import ie.wit.foodtracker.models.EntryModel
+import ie.wit.foodtracker.models.Location
+import org.wit.entry.activities.MapActivity
 
 class EntryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEntryBinding
     private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
+    private lateinit var mapIntentLauncher : ActivityResultLauncher<Intent>
+   // var location = Location(52.245696, -7.139102, 15f)
     var entry = EntryModel()
     var edit = false
     lateinit var app: MainApp
@@ -55,6 +59,7 @@ class EntryActivity : AppCompatActivity() {
             entry.date = binding.date.text.toString()
             entry.time = binding.time.text.toString()
 
+
             if (entry.title.isEmpty()) {
                 Snackbar.make(it,R.string.enter_entry_title, Snackbar.LENGTH_LONG)
                     .show()
@@ -69,6 +74,14 @@ class EntryActivity : AppCompatActivity() {
             setResult(RESULT_OK)
             finish()
         }
+        binding.btnDelete.setOnClickListener() {
+            app.entrys.delete(entry.copy())
+            i("Delete Button Pressed: $entry")
+            setResult(RESULT_OK)
+            finish()
+        }
+
+
 
         binding.chooseImage.setOnClickListener {
             i("Select image")
@@ -77,6 +90,24 @@ class EntryActivity : AppCompatActivity() {
             showImagePicker(imageIntentLauncher)
         }
         registerImagePickerCallback()
+
+        binding.entryLocation.setOnClickListener {
+            i ("Set Location Pressed")
+        }
+        registerMapCallback()
+
+        binding.entryLocation.setOnClickListener {
+            val location = Location(52.245696, -7.139102, 15f)
+            if (entry.zoom != 0f) {
+                location.lat =  entry.lat
+                location.lng = entry.lng
+                location.zoom = entry.zoom
+            }
+            val launcherIntent = Intent(this, MapActivity::class.java)
+                .putExtra("location", location)
+            mapIntentLauncher.launch(launcherIntent)
+        }
+
         }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -90,6 +121,25 @@ class EntryActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+    private fun registerMapCallback() {
+        mapIntentLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            { result ->
+                when (result.resultCode) {
+                    RESULT_OK -> {
+                        if (result.data != null) {
+                            i("Got Location ${result.data.toString()}")
+                            val location = result.data!!.extras?.getParcelable<Location>("location")!!
+                            i("Location == $location")
+                            entry.lat = location.lat
+                            entry.lng = location.lng
+                            entry.zoom = location.zoom
+                        } // end of if
+                    }
+                    RESULT_CANCELED -> { } else -> { }
+                }
+            }
     }
     private fun registerImagePickerCallback() {
         imageIntentLauncher =
