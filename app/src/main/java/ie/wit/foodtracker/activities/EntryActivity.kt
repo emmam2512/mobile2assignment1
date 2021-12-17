@@ -1,12 +1,18 @@
 package ie.wit.foodtracker.activities
+import android.content.ContentValues.TAG
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Switch
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.snackbar.Snackbar
+
 import com.squareup.picasso.Picasso
 import ie.wit.foodtracker.R
 import ie.wit.foodtracker.databinding.ActivityEntryBinding
@@ -20,9 +26,10 @@ import org.wit.entry.activities.MapActivity
 
 class EntryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEntryBinding
-    private lateinit var imageIntentLauncher : ActivityResultLauncher<Intent>
-    private lateinit var mapIntentLauncher : ActivityResultLauncher<Intent>
-   // var location = Location(52.245696, -7.139102, 15f)
+    private lateinit var imageIntentLauncher: ActivityResultLauncher<Intent>
+    private lateinit var mapIntentLauncher: ActivityResultLauncher<Intent>
+
+    // var location = Location(52.245696, -7.139102, 15f)
     var entry = EntryModel()
     var edit = false
     lateinit var app: MainApp
@@ -61,7 +68,7 @@ class EntryActivity : AppCompatActivity() {
 
 
             if (entry.title.isEmpty()) {
-                Snackbar.make(it,R.string.enter_entry_title, Snackbar.LENGTH_LONG)
+                Snackbar.make(it, R.string.enter_entry_title, Snackbar.LENGTH_LONG)
                     .show()
             } else {
                 if (edit) {
@@ -83,6 +90,9 @@ class EntryActivity : AppCompatActivity() {
 
 
 
+
+
+
         binding.chooseImage.setOnClickListener {
             i("Select image")
         }
@@ -92,14 +102,15 @@ class EntryActivity : AppCompatActivity() {
         registerImagePickerCallback()
 
         binding.entryLocation.setOnClickListener {
-            i ("Set Location Pressed")
+            i("Set Location Pressed")
         }
         registerMapCallback()
+
 
         binding.entryLocation.setOnClickListener {
             val location = Location(52.245696, -7.139102, 15f)
             if (entry.zoom != 0f) {
-                location.lat =  entry.lat
+                location.lat = entry.lat
                 location.lng = entry.lng
                 location.zoom = entry.zoom
             }
@@ -108,12 +119,14 @@ class EntryActivity : AppCompatActivity() {
             mapIntentLauncher.launch(launcherIntent)
         }
 
-        }
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_entry, menu)
         return super.onCreateOptionsMenu(menu)
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.item_cancel -> {
@@ -122,6 +135,7 @@ class EntryActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
     private fun registerMapCallback() {
         mapIntentLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult())
@@ -130,22 +144,25 @@ class EntryActivity : AppCompatActivity() {
                     RESULT_OK -> {
                         if (result.data != null) {
                             i("Got Location ${result.data.toString()}")
-                            val location = result.data!!.extras?.getParcelable<Location>("location")!!
+                            val location =
+                                result.data!!.extras?.getParcelable<Location>("location")!!
                             i("Location == $location")
                             entry.lat = location.lat
                             entry.lng = location.lng
                             entry.zoom = location.zoom
                         } // end of if
                     }
-                    RESULT_CANCELED -> { } else -> { }
+                    RESULT_CANCELED -> {}
+                    else -> {}
                 }
             }
     }
+
     private fun registerImagePickerCallback() {
         imageIntentLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult())
             { result ->
-                when(result.resultCode){
+                when (result.resultCode) {
                     RESULT_OK -> {
                         if (result.data != null) {
                             i("Got Result ${result.data!!.data}")
@@ -156,8 +173,11 @@ class EntryActivity : AppCompatActivity() {
                             binding.chooseImage.setText(R.string.change_entry_image)
                         } // end of if
                     }
-                    RESULT_CANCELED -> { } else -> { }
+                    RESULT_CANCELED -> {}
+                    else -> {}
                 }
             }
     }
 }
+
+
