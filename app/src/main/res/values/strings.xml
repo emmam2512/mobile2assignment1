@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">foodTracker</string>
     <string name="button_addEntry">Add Entry</string>
-    <string name="hint_entryTitle">Entry Title</string>
-    <string name="hint_entryDescription">Description </string>
+    <string name="hint_entryTitle">Meal Type</string>
+    <string name="hint_entryDescription">Food Name</string>
     <string name="hint_entryKcal">Number of Kcals </string>
     <string name="hint_entryDate">Date </string>
     <string name="hint_entryTime">Time </string>
@@ -19,4 +19,7 @@
     <string name="title_activity_maps">MapsActivity</string>
     <string name="title_activity_map">Map</string>
     <string name="button_deleteEntry">Delete Entry</string>
+    <string name="choose_theme_text">choose theme</string>
+
+
 </resources>
