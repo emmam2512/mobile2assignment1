@@ -40,6 +40,11 @@ class EntryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityEntryBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.kcal.minValue = 1
+        binding.kcal.maxValue = 1000
+
+
+
 
         binding.toolbarAdd.title = title
         setSupportActionBar(binding.toolbarAdd)
@@ -50,7 +55,7 @@ class EntryActivity : AppCompatActivity() {
             entry = intent.extras?.getParcelable("entry_edit")!!
             binding.entryTitle.setText(entry.title)
             binding.description.setText(entry.description)
-            binding.kcal.setText(entry.kcal.toString())
+            binding.kcal.value=entry.kcal
             binding.date.setText(entry.date)
             binding.time.setText(entry.time)
             binding.btnAdd.setText(R.string.save_entry)
@@ -62,7 +67,7 @@ class EntryActivity : AppCompatActivity() {
         binding.btnAdd.setOnClickListener() {
             entry.title = binding.entryTitle.text.toString()
             entry.description = binding.description.text.toString()
-            entry.kcal = binding.kcal.text.toString().toInt()
+            entry.kcal = binding.kcal.value.toInt()
             entry.date = binding.date.text.toString()
             entry.time = binding.time.text.toString()
 
